@@ -9,6 +9,7 @@
     <div>
         <h1>Hlo guys</h1>
         <h3> That's my new page!! </h3>
+        echo "<h5>this is php file</h5>";
     </div>
 </body>
 </html>
