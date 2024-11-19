@@ -1,4 +1,3 @@
-
 const CommandType = {
     'ReverseShell': 'ReverseShell',
     'BindShell': 'BindShell',
