@@ -3,39 +3,42 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
-    <title>New</title>
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Page</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-800 font-sans">
 
-    <!-- that's html -->
-
-    <div>
-        <h1>Hlo guys</h1>
-        <h3> That's my new page!! </h3>
+    <!-- Main Content -->
+    <div class="flex flex-col items-center justify-center min-h-screen">
+        <h1 class="text-5xl font-bold text-blue-600 mb-4">Hello, Guys!</h1>
+        <h3 class="text-2xl text-gray-600">That's my new page!!</h3>
     </div>
-    <hr>
-    <footer>
-        <ul>
-            <li>
-                <a href="bash.sh">bash file</a>
-            </li>
-            <li>
-                <a href="javascript.js">javascript file</a>
-            </li>
-            <li>
-                <a href="python.py">python file</a>
-            </li>
-            <li>
-                <a href="sql.php">sql file</a>
-            </li>
-        </ul>
+
+    <hr class="border-t-2 border-gray-300 my-8">
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-6">
+        <div class="container mx-auto text-center">
+            <ul class="flex justify-center space-x-6">
+                <li>
+                    <a href="bash.sh" class="text-blue-400 hover:text-blue-600">Bash File</a>
+                </li>
+                <li>
+                    <a href="javascript.js" class="text-blue-400 hover:text-blue-600">JavaScript File</a>
+                </li>
+                <li>
+                    <a href="python.py" class="text-blue-400 hover:text-blue-600">Python File</a>
+                </li>
+                <li>
+                    <a href="sql.php" class="text-blue-400 hover:text-blue-600">SQL File</a>
+                </li>
+            </ul>
+        </div>
     </footer>
-
-    <?php include "sql.php"; ?>
-
+    
 </body>
 
 </html>
