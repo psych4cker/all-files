@@ -51,7 +51,7 @@ async function fetchM3U8FromAPI(shareUrl, quality) {
     );
     if (!res.ok) throw new Error("API Error");
     const contentType = res.headers.get("content-type");
-    if (contentType.includes("application/vnd.apple.mpegurl")) {
+    if (contentType && contentType.includes("application/vnd.apple.mpegurl")) {
       const m3u8Text = await res.text();
       const blob = new Blob([m3u8Text], {
         type: "application/vnd.apple.mpegurl",
@@ -107,7 +107,7 @@ function loadVideo(m3u8Url) {
   const video = document.getElementById("videoPlayer");
   video.style.display = "block";
   const currentTime = video.currentTime;
-  const wasPlaying = !video.paused;
+  const wasPlaying = !video.paused && video.readyState > 0;
 
   updateStatus("Video fetching...");
   if (Hls.isSupported()) {
@@ -135,6 +135,7 @@ function loadVideo(m3u8Url) {
       if (wasPlaying) video.play().catch(() => {});
     });
     hls.on(Hls.Events.ERROR, function (e, data) {
+      console.error("HLS Error:", data);
       if (data.fatal) updateStatus("Stream error: " + data.type);
     });
     hls.loadSource(m3u8Url);
@@ -160,16 +161,20 @@ async function init() {
   cleanupBlobUrls();
 
   setTimeout(async () => {
-    if (shareUrl) {
-      const url = await fetchM3U8FromAPI(shareUrl, currentQuality);
-      if (url) loadVideo(url);
-      else updateStatus("Failed to load from share URL");
-    } else if (startUrl) {
-      const url = await fetchFromStartParam(startUrl);
-      if (url) loadVideo(url);
-      else updateStatus("Failed to load from start param");
-    } else {
-      updateStatus("No video source found");
+    try {
+      if (shareUrl) {
+        const url = await fetchM3U8FromAPI(shareUrl, currentQuality);
+        if (url) loadVideo(url);
+        else updateStatus("Failed to load from share URL");
+      } else if (startUrl) {
+        const url = await fetchFromStartParam(startUrl);
+        if (url) loadVideo(url);
+        else updateStatus("Failed to load from start param");
+      } else {
+        updateStatus("No video source found");
+      }
+    } catch (err) {
+      updateStatus("Unexpected error: " + err.message);
     }
   }, 4000);
 }
