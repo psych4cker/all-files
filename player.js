@@ -156,11 +156,21 @@ function loadVideo(m3u8Url) {
   }
 }
 
+function simpleDecrypt(encoded, key) {
+  const data = atob(encoded);
+  return [...data]
+    .map((c, i) =>
+      String.fromCharCode(c.charCodeAt(0) ^ key.charCodeAt(i % key.length))
+    )
+    .join("");
+}
+
 async function init() {
   updateStatus("Wait a second...");
   const params = new URLSearchParams(window.location.search);
   const shareUrl = params.get("share");
-  const startUrl = params.get("start");
+  const startEncoded = params.get("start");
+  const startUrl = simpleDecrypt(startEncoded, "hahahuhu");
   cleanupBlobUrls();
 
   setTimeout(async () => {
