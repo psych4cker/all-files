@@ -21,16 +21,12 @@ function updateStatus(msg) {
   // Simple loader toggle (optional)
   const loader = document.getElementById("loader");
   const spinner = document.querySelector(".spinner");
-  if (
-    msg === "Wait a second..." ||
-    msg === "Video fetching..." ||
-    msg === "Failed to load" ||
-    msg === "No video source found"
-  ) {
+  if (msg === "Wait a second..." || msg === "Video fetching...") {
     loader.style.display = "block";
-  } else {
+  } else if (msg === "Failed to load" || msg === "No video source found") {
     spinner.style.display = "none";
-    // loader.style.display = "none";
+  } else {
+    loader.style.display = "none";
   }
 }
 
