@@ -20,6 +20,7 @@ function updateStatus(msg) {
 
   // Simple loader toggle (optional)
   const loader = document.getElementById("loader");
+  const spinner = document.querySelector(".spinner");
   if (
     msg === "Wait a second..." ||
     msg === "Video fetching..." ||
@@ -28,7 +29,8 @@ function updateStatus(msg) {
   ) {
     loader.style.display = "block";
   } else {
-    loader.style.display = "none";
+    spinner.style.display = "none";
+    // loader.style.display = "none";
   }
 }
 
