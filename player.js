@@ -10,7 +10,21 @@ const PROXY_WORKERS = [
 let requestCounter = Math.floor(Math.random() * PROXY_WORKERS.length);
 
 function updateStatus(msg) {
-  document.getElementById("status").textContent = msg;
+  const status = document.getElementById("status");
+  if (!msg) {
+    status.style.display = "none";
+  } else {
+    status.textContent = msg;
+    status.style.display = "block";
+  }
+
+  // Simple loader toggle (optional)
+  const loader = document.getElementById("loader");
+  if (msg === "Wait a second..." || msg === "Video fetching...") {
+    loader.style.display = "block";
+  } else {
+    loader.style.display = "none";
+  }
 }
 
 function getNextProxyWorker() {
@@ -28,7 +42,7 @@ function cleanupBlobUrls() {
 
 async function fetchM3U8FromAPI(shareUrl, quality) {
   try {
-    updateStatus("Fetching stream...");
+    updateStatus("Video fetching...");
     const q = quality.replace("M3U8_AUTO_", "");
     const res = await fetch(
       `${API_BASE_URL}/get_m3u8?url=${encodeURIComponent(
@@ -57,7 +71,7 @@ async function fetchM3U8FromAPI(shareUrl, quality) {
 
 async function fetchFromStartParam(startUrl) {
   try {
-    updateStatus("Fetching stream...");
+    updateStatus("Video fetching...");
     if (!startUrl.startsWith("http")) {
       startUrl = `https://www.1024tera.com/sharing/link?surl=${startUrl}`;
     }
@@ -79,12 +93,23 @@ async function fetchFromStartParam(startUrl) {
   }
 }
 
+function goFullScreen(video) {
+  if (video.requestFullscreen) {
+    video.requestFullscreen();
+  } else if (video.webkitRequestFullscreen) {
+    video.webkitRequestFullscreen();
+  } else if (video.msRequestFullscreen) {
+    video.msRequestFullscreen();
+  }
+}
+
 function loadVideo(m3u8Url) {
   const video = document.getElementById("videoPlayer");
   video.style.display = "block";
   const currentTime = video.currentTime;
   const wasPlaying = !video.paused;
-  updateStatus("Loading video...");
+
+  updateStatus("Video fetching...");
   if (Hls.isSupported()) {
     if (hls) hls.destroy();
     hls = new Hls({
@@ -105,9 +130,9 @@ function loadVideo(m3u8Url) {
     });
     hls.on(Hls.Events.MANIFEST_PARSED, function () {
       video.currentTime = currentTime;
-      updateStatus("Ready to play");
-      if (wasPlaying)
-        video.play().catch(() => updateStatus("Click play to start"));
+      updateStatus(""); // hide status
+      goFullScreen(video);
+      if (wasPlaying) video.play().catch(() => {});
     });
     hls.on(Hls.Events.ERROR, function (e, data) {
       if (data.fatal) updateStatus("Stream error: " + data.type);
@@ -118,9 +143,9 @@ function loadVideo(m3u8Url) {
     video.src = m3u8Url;
     video.addEventListener("loadedmetadata", function () {
       video.currentTime = currentTime;
-      updateStatus("Ready to play");
-      if (wasPlaying)
-        video.play().catch(() => updateStatus("Click play to start"));
+      updateStatus(""); // hide status
+      goFullScreen(video);
+      if (wasPlaying) video.play().catch(() => {});
     });
   } else {
     updateStatus("HLS not supported");
@@ -128,7 +153,7 @@ function loadVideo(m3u8Url) {
 }
 
 async function init() {
-  updateStatus("Wait 4 seconds...");
+  updateStatus("Wait a second...");
   const params = new URLSearchParams(window.location.search);
   const shareUrl = params.get("share");
   const startUrl = params.get("start");
