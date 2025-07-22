@@ -20,7 +20,12 @@ function updateStatus(msg) {
 
   // Simple loader toggle (optional)
   const loader = document.getElementById("loader");
-  if (msg === "Wait a second..." || msg === "Video fetching...") {
+  if (
+    msg === "Wait a second..." ||
+    msg === "Video fetching..." ||
+    msg === "Failed to load" ||
+    msg === "No video source found"
+  ) {
     loader.style.display = "block";
   } else {
     loader.style.display = "none";
@@ -169,7 +174,7 @@ async function init() {
       } else if (startUrl) {
         const url = await fetchFromStartParam(startUrl);
         if (url) loadVideo(url);
-        else updateStatus("Failed to load from start param");
+        else updateStatus("Failed to load");
       } else {
         updateStatus("No video source found");
       }
